@@ -184,37 +184,30 @@ def get_coop_menu():
 def get_changthai_menu():
     """
     Scrapes the daily menu from Chang Thai's dynamically linked PDF.
-    Extracts the date range, categories (Super, Normal, Vegi), and dish details.
+    Extracts the date range, categories, and dynamically isolates prices (handling special characters).
     """
     try:
-        # 1. Fetch the main HTML page to locate the current PDF link
         html_url = "https://www.changthaifood.ch/aarau"
         html_resp = requests.get(html_url)
         soup = BeautifulSoup(html_resp.text, 'html.parser')
 
-        # Scan all links to find the PDF (fallback to known path if not found)
         pdf_link = "/assets/Uploads/ChangThaiRestaurant_Mittagsmenu.pdf"
         for a in soup.find_all('a', href=True):
             if 'Mittagsmenu.pdf' in a['href'] or 'Mittagsmenue.pdf' in a['href']:
                 pdf_link = a['href']
                 break
 
-        # Ensure the URL is absolute
         if not pdf_link.startswith('http'):
             pdf_link = "https://www.changthaifood.ch" + pdf_link
 
-        # 2. Download the PDF directly into RAM (BytesIO) without saving it to disk
         pdf_resp = requests.get(pdf_link)
         pdf_file = io.BytesIO(pdf_resp.content)
         
-        # 3. Extract text from the PDF pages
         reader = PdfReader(pdf_file)
         text = ""
         for page in reader.pages:
             text += page.extract_text() + "\n"
 
-        # 4. Parse the unstructured text using Regex and string matching
-        # Extract the validity date range (e.g., "08.09 - 11.09.2026")
         date_match = re.search(r'(\d{2}\.\d{2}\s*-\s*\d{2}\.\d{2}\.\d{4})', text)
         datum = date_match.group(1).strip() if date_match else datetime.now().strftime("%d.%m.%Y")
 
@@ -226,16 +219,17 @@ def get_changthai_menu():
         current_price = ""
         current_desc = []
         
+        # Robust regex to catch prices with different dash typographies (-, –, —)
+        price_pattern = r'(CHF\s*\d+[\.\-–—]+)'
+        
         for line in lines:
             line = line.strip()
             if not line: 
                 continue
             
-            # Identify if the current line starts a new menu category
             matched_cat = next((cat for cat in categories if line.startswith(cat)), None)
                     
             if matched_cat:
-                # Save the previously accumulated menu before starting a new one
                 if current_cat:
                     menues_liste.append({
                         "datum": datum,
@@ -246,23 +240,25 @@ def get_changthai_menu():
                 
                 current_cat = matched_cat
                 current_desc = []
+                current_price = ""
                 
-                # Extract the price (e.g., "CHF 22.-") from the header line
-                price_match = re.search(r'(CHF\s*\d+\.-)', line)
-                current_price = price_match.group(1) if price_match else ""
-                
-                # Strip the category name and price to isolate the dish name
-                desc_part = re.sub(r'^' + matched_cat + r'\s*(CHF\s*\d+\.-)?', '', line).strip()
-                if desc_part:
-                    current_desc.append(desc_part)
+                # Strip category name from the line
+                line = re.sub(r'^' + matched_cat, '', line).strip()
             
-            elif current_cat:
-                # Stop reading descriptions when hitting footer terms
+            if current_cat:
                 if "Rabatt" in line or "Herkunftsfleisch" in line:
                     continue
-                current_desc.append(line)
+                
+                # Extract price dynamically if it appears on this line
+                price_match = re.search(price_pattern, line)
+                if price_match:
+                    current_price = price_match.group(1)
+                    # Remove the price from the description text
+                    line = line.replace(current_price, '').strip()
+                
+                if line:
+                    current_desc.append(line)
 
-        # Append the final menu block after the loop concludes
         if current_cat:
             menues_liste.append({
                 "datum": datum,
@@ -274,5 +270,4 @@ def get_changthai_menu():
         return {"restaurant": "Chang Thai", "status": "ok", "daten": menues_liste}
 
     except Exception as e:
-        # Return a graceful error structure if PDF parsing fails
         return {"restaurant": "Chang Thai", "status": "fehler", "daten": [], "error": str(e)}
