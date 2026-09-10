@@ -38,3 +38,14 @@ The FastAPI backend exposes the following endpoints returning standardized JSON 
 1. Clone the repository:
    ```bash
    git clone [https://github.com/Gau-dii/menu-scraper.git](https://github.com/Gau-dii/menu-scraper.git)
+
+2. Install the required Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+
+3. Start the local Uvicorn server:
+   ```bash
+   uvicorn main:app --reload
+
+4. Open index.html in your preferred web browser.
+ 
