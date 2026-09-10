@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mittagsmenüs Aarau</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f2f5; 
+            color: #333; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        h1 { text-align: center; color: #1a365d; margin-bottom: 30px; }
+        
+        .restaurant-box { 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            margin-bottom: 30px; 
+            padding: 25px; 
+        }
+        h2 { 
+            color: #2b6cb0; 
+            border-bottom: 2px solid #e2e8f0; 
+            padding-bottom: 10px; 
+            margin-top: 0; 
+        }
+        
+        .menu-container { display: flex; flex-direction: column; }
+        
+        .menu-item { 
+            padding: 15px 0; 
+            border-bottom: 1px solid #edf2f7; 
+        }
+        .menu-item:last-child { border-bottom: none; padding-bottom: 0; }
+        
+        .menu-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 8px; 
+        }
+        
+        .badge-group { display: flex; gap: 10px; align-items: center; }
+        
+        .menu-date { 
+            font-size: 0.85em; 
+            font-weight: bold; 
+            padding: 4px 8px; 
+            border-radius: 6px; 
+        }
+        
+        /* Color palette mapping for up to 5 consecutive days */
+        .date-color-0 { background: #e3f2fd; color: #1565c0; } 
+        .date-color-1 { background: #e8f5e9; color: #2e7d32; } 
+        .date-color-2 { background: #fff3e0; color: #ef6c00; } 
+        .date-color-3 { background: #f3e5f5; color: #6a1b9a; } 
+        .date-color-4 { background: #ffebee; color: #c62828; } 
+        
+        .menu-category { font-weight: bold; color: #2d3748; font-size: 0.9em; }
+        .menu-dish { font-size: 1.1em; color: #1a202c; line-height: 1.4; }
+        .menu-price { color: #dd6b20; font-weight: bold; font-size: 0.95em; text-align: right; }
+
+        /* Styling for the corporate discount notification banner */
+        .discount-hint { 
+            background-color: #e6f6e6; 
+            color: #2e7d32; 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            font-size: 0.9em; 
+            margin-bottom: 20px; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Mittagsmenüs in Aarau</h1>
+
+    <div class="restaurant-box">
+        <h2>Kantine Rampe</h2>
+        
+        <!-- Employee discount banner for Swisslog staff -->
+        <div class="discount-hint">
+            💡 <span><strong>Tipp:</strong> Zeige deinen Swisslog-Badge an der Kasse vor und du erhältst <strong>2 CHF Rabatt</strong> auf diese Preise!</span>
+        </div>
+        
+        <div id="rampe-liste" class="menu-container">Lade Daten von der API...</div>
+    </div>
+
+    <div class="restaurant-box">
+        <h2>Mojo Aarau</h2>
+        <div id="mojo-liste" class="menu-container">Lade Daten von der API...</div>
+    </div>
+
+    <script>
+        function renderMenus(data, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; 
+            
+            // Extract unique dates from the dataset to group menu items visually
+            const uniqueDates = [...new Set(data.daten.map(item => item.datum))];
+            
+            data.daten.forEach(menu => {
+                const item = document.createElement('div');
+                item.className = 'menu-item';
+                
+                // Assign a specific color class index (0-4) based on the date's position in the unique array
+                const dateIndex = uniqueDates.indexOf(menu.datum) % 5;
+                const dateClass = `date-color-${dateIndex}`;
+                
+                const preisHTML = menu.preis ? `<div class="menu-price">${menu.preis}</div>` : '';
+                
+                // Inject the dynamic data into the HTML template
+                item.innerHTML = `
+                    <div class="menu-header">
+                        <div class="badge-group">
+                            <span class="menu-date ${dateClass}">${menu.datum}</span>
+                            <span class="menu-category">${menu.kategorie}</span>
+                        </div>
+                        ${preisHTML}
+                    </div>
+                    <div class="menu-dish">${menu.gericht}</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Fetch and render data from the FastAPI endpoints asynchronously
+        fetch('http://127.0.0.1:8000/api/rampe')
+            .then(response => response.json())
+            .then(data => renderMenus(data, 'rampe-liste'));
+
+        fetch('http://127.0.0.1:8000/api/mojo')
+            .then(response => response.json())
+            .then(data => renderMenus(data, 'mojo-liste'));
+    </script>
+</body>
+</html>
