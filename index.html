@@ -133,11 +133,11 @@
         }
 
         // Fetch and render data from the FastAPI endpoints asynchronously
-        fetch('http://127.0.0.1:8000/api/rampe')
+        fetch('https://menu-scraper-18yf.onrender.com/api/rampe')
             .then(response => response.json())
             .then(data => renderMenus(data, 'rampe-liste'));
 
-        fetch('http://127.0.0.1:8000/api/mojo')
+        fetch('https://menu-scraper-18yf.onrender.com/api/mojo')
             .then(response => response.json())
             .then(data => renderMenus(data, 'mojo-liste'));
     </script>
