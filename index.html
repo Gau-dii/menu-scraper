@@ -52,8 +52,7 @@
             padding: 4px 8px; 
             border-radius: 6px; 
         }
-        
-        /* Color palette mapping for up to 5 consecutive days */
+         /* Color palette mapping for up to 5 consecutive days */
         .date-color-0 { background: #e3f2fd; color: #1565c0; } 
         .date-color-1 { background: #e8f5e9; color: #2e7d32; } 
         .date-color-2 { background: #fff3e0; color: #ef6c00; } 
@@ -77,6 +76,20 @@
             gap: 10px;
             font-weight: 500;
         }
+
+        .toggle-btn {
+            background-color: #e2e8f0;
+            color: #2b6cb0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+        .toggle-btn:hover { background-color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -85,43 +98,80 @@
 
     <div class="restaurant-box">
         <h2>Kantine Rampe</h2>
-        
-        <!-- Employee discount banner for Swisslog staff -->
+
+        <!-- Employee discount banner for staff -->
         <div class="discount-hint">
             💡 <span><strong>Tipp:</strong> Zeige deinen Swisslog-Badge an der Kasse vor und du erhältst <strong>2 CHF Rabatt</strong> auf diese Preise!</span>
         </div>
-        
         <div id="rampe-liste" class="menu-container">Lade Daten von der API...</div>
+        
+        <button id="rampe-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
     </div>
 
     <div class="restaurant-box">
         <h2>Mojo Aarau</h2>
         <div id="mojo-liste" class="menu-container">Lade Daten von der API...</div>
+        <button id="mojo-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
     </div>
 
     <script>
-        function renderMenus(data, containerId) {
+        function formatShortDate(dateStr) {
+            // day-array (0=sunday, 1=monday, etc.)
+            const wochentage = ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'];
+
+            // case 1: Mojo API (z.B. "10.09.2026")
+            if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)) {
+                const teile = dateStr.split('.');                 
+                const datum = new Date(teile[2], teile[1] - 1, teile[0]);
+                const wochentag = wochentage[datum.getDay()]; 
+                return `${wochentag} ${teile[0]}.${teile[1]}.`; 
+            }
+
+            // case 2: Rampe API (z.B. "Donnerstag, 10. September")
+            const ersetzen = {                
+                ' Januar': '01.', ' Februar': '02.', ' März': '03.', ' April': '04.',
+                ' Mai': '05.', ' Juni': '06.', ' Juli': '07.', ' August': '08.',
+                ' September': '09.', ' Oktober': '10.', ' November': '11.', ' Dezember': '12.',                
+                'Montag, ': 'Mo. ', 'Dienstag, ': 'Di. ', 'Mittwoch, ': 'Mi. ', 
+                'Donnerstag, ': 'Do. ', 'Freitag, ': 'Fr. '
+            };
+            
+            for (const [lang, kurz] of Object.entries(ersetzen)) {
+                dateStr = dateStr.replace(lang, kurz);
+            }
+            
+            return dateStr;
+        }
+        
+        function renderMenus(data, containerId, buttonId) {
             const container = document.getElementById(containerId);
+            const button = document.getElementById(buttonId);
             container.innerHTML = ''; 
             
-            // Extract unique dates from the dataset to group menu items visually
             const uniqueDates = [...new Set(data.daten.map(item => item.datum))];
+            if (uniqueDates.length === 0) return;
+            
+            const firstDate = uniqueDates[0];
             
             data.daten.forEach(menu => {
                 const item = document.createElement('div');
                 item.className = 'menu-item';
                 
-                // Assign a specific color class index (0-4) based on the date's position in the unique array
+                if (menu.datum !== firstDate) {
+                    item.classList.add('hidden-menu');
+                    item.style.display = 'none';
+                }
+                
                 const dateIndex = uniqueDates.indexOf(menu.datum) % 5;
                 const dateClass = `date-color-${dateIndex}`;
-                
                 const preisHTML = menu.preis ? `<div class="menu-price">${menu.preis}</div>` : '';
                 
-                // Inject the dynamic data into the HTML template
+                const shortDate = formatShortDate(menu.datum);
+                
                 item.innerHTML = `
                     <div class="menu-header">
                         <div class="badge-group">
-                            <span class="menu-date ${dateClass}">${menu.datum}</span>
+                            <span class="menu-date ${dateClass}">${shortDate}</span>
                             <span class="menu-category">${menu.kategorie}</span>
                         </div>
                         ${preisHTML}
@@ -130,16 +180,26 @@
                 `;
                 container.appendChild(item);
             });
+
+            if (uniqueDates.length > 1) {
+                button.style.display = 'block';
+                button.onclick = function() {
+                    const hiddenItems = container.querySelectorAll('.hidden-menu');
+                    const isHidden = hiddenItems[0].style.display === 'none';
+                    
+                    hiddenItems.forEach(el => el.style.display = isHidden ? 'block' : 'none');
+                    button.innerText = isHidden ? 'Weniger anzeigen' : 'Mehr anzeigen';
+                };
+            }
         }
 
-        // Fetch and render data from the FastAPI endpoints asynchronously
         fetch('https://menu-scraper-18yf.onrender.com/api/rampe')
             .then(response => response.json())
-            .then(data => renderMenus(data, 'rampe-liste'));
+            .then(data => renderMenus(data, 'rampe-liste', 'rampe-btn'));
 
         fetch('https://menu-scraper-18yf.onrender.com/api/mojo')
             .then(response => response.json())
-            .then(data => renderMenus(data, 'mojo-liste'));
+            .then(data => renderMenus(data, 'mojo-liste', 'mojo-btn'));
     </script>
 </body>
 </html>
