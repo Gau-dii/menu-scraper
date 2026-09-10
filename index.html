@@ -29,6 +29,16 @@
             margin-top: 0; 
         }
         
+        /* Styling for the Google Maps routing links in the headers */
+        .maps-link {
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.2s;
+        }
+        .maps-link:hover {
+            opacity: 0.8;
+        }
+
         .menu-container { display: flex; flex-direction: column; }
         
         .menu-item { 
@@ -52,7 +62,8 @@
             padding: 4px 8px; 
             border-radius: 6px; 
         }
-         /* Color palette mapping for up to 5 consecutive days */
+        
+        /* Color palette mapping for up to 5 consecutive days */
         .date-color-0 { background: #e3f2fd; color: #1565c0; } 
         .date-color-1 { background: #e8f5e9; color: #2e7d32; } 
         .date-color-2 { background: #fff3e0; color: #ef6c00; } 
@@ -77,6 +88,7 @@
             font-weight: 500;
         }
 
+        /* Styling for the expandable toggle button */
         .toggle-btn {
             background-color: #e2e8f0;
             color: #2b6cb0;
@@ -97,77 +109,113 @@
     <h1>Mittagsmenüs in Aarau</h1>
 
     <div class="restaurant-box">
-        <h2>Kantine Rampe</h2>
-
+        <h2>
+            <!-- Deep link to Google Maps for pedestrian routing -->
+            <a href="https://www.google.com/maps/dir/?api=1&destination=Kantine+Rampe+Aarau&travelmode=walking" target="_blank" class="maps-link">
+                Kantine Rampe 📍
+            </a>
+        </h2>
+        
         <!-- Employee discount banner for staff -->
         <div class="discount-hint">
             💡 <span><strong>Tipp:</strong> Zeige deinen Swisslog-Badge an der Kasse vor und du erhältst <strong>2 CHF Rabatt</strong> auf diese Preise!</span>
         </div>
         <div id="rampe-liste" class="menu-container">Lade Daten von der API...</div>
         
+        <!-- Toggle button to expand/collapse multi-day menu listings -->
         <button id="rampe-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
     </div>
 
     <div class="restaurant-box">
-        <h2>Mojo Aarau</h2>
+        <h2>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=Mojo+Aarau&travelmode=walking" target="_blank" class="maps-link">
+                Mojo Aarau 📍
+            </a>
+        </h2>
         <div id="mojo-liste" class="menu-container">Lade Daten von der API...</div>
         <button id="mojo-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
     </div>
 
-    <script>
-        function formatShortDate(dateStr) {
-            // day-array (0=sunday, 1=monday, etc.)
-            const wochentage = ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'];
+    <div class="restaurant-box">
+        <h2>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=Coop+Restaurant+Aarau+Telli&travelmode=walking" target="_blank" class="maps-link">
+                Coop Telli 📍
+            </a>
+        </h2>
+        <div id="coop-liste" class="menu-container">Lade Daten von der API...</div>
+        <button id="coop-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
+    </div>
 
-            // case 1: Mojo API (z.B. "10.09.2026")
+    <script>
+        /**
+         * Standardizes and shortens date strings into a compact format (e.g., "Do. 10.09.")
+         * Handles both ISO-like numeric strings and localized text strings.
+         */
+        function formatShortDate(dateStr) {
+            // Array mapping JavaScript day indices (0=Sunday) to localized short weekday labels
+            const weekdays = ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'];
+
+            // Case 1: ISO-like numeric date format from API (e.g., "10.09.2026")
             if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)) {
-                const teile = dateStr.split('.');                 
-                const datum = new Date(teile[2], teile[1] - 1, teile[0]);
-                const wochentag = wochentage[datum.getDay()]; 
-                return `${wochentag} ${teile[0]}.${teile[1]}.`; 
+                const parts = dateStr.split('.');                
+                // Month indices in JavaScript Date objects are 0-indexed (subtract 1)
+                const dateObj = new Date(parts[2], parts[1] - 1, parts[0]);
+                const dayName = weekdays[dateObj.getDay()]; 
+                return `${dayName} ${parts[0]}.${parts[1]}.`; 
             }
 
-            // case 2: Rampe API (z.B. "Donnerstag, 10. September")
-            const ersetzen = {                
+            // Case 2: Localized text format (e.g., "Donnerstag, 10. September")
+            const replacements = {               
+                // Convert German month names to numeric representations
                 ' Januar': '01.', ' Februar': '02.', ' März': '03.', ' April': '04.',
                 ' Mai': '05.', ' Juni': '06.', ' Juli': '07.', ' August': '08.',
                 ' September': '09.', ' Oktober': '10.', ' November': '11.', ' Dezember': '12.',                
+                // Abbreviate weekday names including trailing commas
                 'Montag, ': 'Mo. ', 'Dienstag, ': 'Di. ', 'Mittwoch, ': 'Mi. ', 
                 'Donnerstag, ': 'Do. ', 'Freitag, ': 'Fr. '
             };
             
-            for (const [lang, kurz] of Object.entries(ersetzen)) {
-                dateStr = dateStr.replace(lang, kurz);
+            for (const [longText, shortText] of Object.entries(replacements)) {
+                dateStr = dateStr.replace(longText, shortText);
             }
             
             return dateStr;
         }
         
+        /**
+         * Renders dynamic menu items into the designated DOM container.
+         * Enforces a "today-first" focus by collapsing future days behind a toggle action.
+         */
         function renderMenus(data, containerId, buttonId) {
             const container = document.getElementById(containerId);
             const button = document.getElementById(buttonId);
             container.innerHTML = ''; 
             
+            // Extract unique dates to determine grouping and visibility logic
             const uniqueDates = [...new Set(data.daten.map(item => item.datum))];
             if (uniqueDates.length === 0) return;
             
+            // Designate the earliest available date as the primary current focus
             const firstDate = uniqueDates[0];
             
             data.daten.forEach(menu => {
                 const item = document.createElement('div');
                 item.className = 'menu-item';
                 
+                // Collapse menu entries that do not match the current day's focus
                 if (menu.datum !== firstDate) {
                     item.classList.add('hidden-menu');
                     item.style.display = 'none';
                 }
                 
+                // Assign a specific color class index (0-4) based on the date's position
                 const dateIndex = uniqueDates.indexOf(menu.datum) % 5;
                 const dateClass = `date-color-${dateIndex}`;
                 const preisHTML = menu.preis ? `<div class="menu-price">${menu.preis}</div>` : '';
                 
                 const shortDate = formatShortDate(menu.datum);
                 
+                // Inject sanitized markup into the DOM element
                 item.innerHTML = `
                     <div class="menu-header">
                         <div class="badge-group">
@@ -181,6 +229,7 @@
                 container.appendChild(item);
             });
 
+            // Bind toggle behavior to the expansion button if multiple dates exist
             if (uniqueDates.length > 1) {
                 button.style.display = 'block';
                 button.onclick = function() {
@@ -193,6 +242,7 @@
             }
         }
 
+        // Asynchronously fetch and render payloads from the cloud-hosted backend endpoints
         fetch('https://menu-scraper-18yf.onrender.com/api/rampe')
             .then(response => response.json())
             .then(data => renderMenus(data, 'rampe-liste', 'rampe-btn'));
@@ -200,6 +250,10 @@
         fetch('https://menu-scraper-18yf.onrender.com/api/mojo')
             .then(response => response.json())
             .then(data => renderMenus(data, 'mojo-liste', 'mojo-btn'));
+
+        fetch('https://menu-scraper-18yf.onrender.com/api/coop')
+            .then(response => response.json())
+            .then(data => renderMenus(data, 'coop-liste', 'coop-btn'));    
     </script>
 </body>
 </html>

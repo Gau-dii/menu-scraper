@@ -123,3 +123,57 @@ def get_mojo_menu():
             api_status = "fehler"
             
     return {"restaurant": "Mojo Aarau", "status": api_status, "daten": menues_liste}
+
+@app.get("/api/coop")
+def get_coop_menu():
+    """
+    Scrapes the daily menus from Coop Telli Restaurant's HTML website.
+    Extracts dish categories, descriptions, and prices from the DOM tables.
+    """
+    url = "https://www.coop-restaurant.ch/de/restaurantfinder/finderdetailpage.2039.html"
+    antwort = requests.get(url)
+    menues_liste = []
+
+    # Fallback date in case the DOM traversal fails
+    heute_string = datetime.now().strftime("%d.%m.%Y")
+
+    if antwort.status_code == 200:
+        # Parse the HTML DOM
+        soup = BeautifulSoup(antwort.text, "html.parser")
+
+        # Target the specific tables generated for daily menus
+        tables = soup.select("table.menues__table[data-restaurant-menues='day']")
+
+        for table in tables:
+            try:
+                datum_element = table.select_one(".menues__table-caption")
+                
+                # Safely extract the date or use the fallback
+                datum = datum_element.get_text(" ", strip=True) if datum_element else heute_string
+
+                for row in table.select("tr.menues__row"):
+                    cells = row.select("td")
+
+                    # Skip header rows or malformed rows that don't have exactly 3 columns
+                    if len(cells) != 3:
+                        continue
+
+                    # Extract dish name and price
+                    gericht = cells[0].get_text(" ", strip=True)
+                    preis = cells[2].get_text(" ", strip=True)
+
+                    if gericht != "":
+                        menues_liste.append({
+                            "datum": datum,
+                            "kategorie": "Tagesangebot",
+                            "gericht": gericht,
+                            "preis": f"CHF {preis}" if preis else ""
+                        })
+            except AttributeError:
+                # Silently skip malformed DOM nodes
+                continue
+
+        return {"restaurant": "Coop Restaurant Aarau Telli", "status": "ok", "daten": menues_liste}
+
+    # Fallback return when the HTTP request fails
+    return {"restaurant": "Coop Restaurant Aarau Telli", "status": "fehler", "daten": []}
