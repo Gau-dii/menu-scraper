@@ -27,6 +27,25 @@
             border-bottom: 2px solid #e2e8f0; 
             padding-bottom: 10px; 
             margin-top: 0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .website-link {
+            text-decoration: none;
+            font-size: 0.7em;
+            color: #4a5568;
+            background-color: #edf2f7;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .website-link:hover {
+            background-color: #e2e8f0;
         }
         
         /* Styling for the Google Maps routing links in the headers */
@@ -130,9 +149,11 @@
 
     <div class="restaurant-box">
         <h2>
-            <!-- Deep link to Google Maps for pedestrian routing -->
             <a href="https://www.google.com/maps/dir/?api=1&destination=Kantine+Rampe+Aarau&travelmode=walking" target="_blank" class="maps-link">
                 Kantine Rampe 📍
+            </a>
+            <a href="https://rampe-aarau.ch/" target="_blank" class="website-link" title="Offizielle Webseite">
+                🌐 Web
             </a>
         </h2>
         
@@ -151,7 +172,11 @@
             <a href="https://www.google.com/maps/dir/?api=1&destination=Mojo+Aarau&travelmode=walking" target="_blank" class="maps-link">
                 Mojo Aarau 📍
             </a>
+            <a href="https://www.mojo-aarau.ch/" target="_blank" class="website-link" title="Offizielle Webseite">
+                🌐 Web
+            </a>
         </h2>
+
         <div id="mojo-liste" class="menu-container">Lade Daten von der API...</div>
         <button id="mojo-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
     </div>
@@ -161,7 +186,11 @@
             <a href="https://www.google.com/maps/dir/?api=1&destination=Coop+Restaurant+Aarau+Telli&travelmode=walking" target="_blank" class="maps-link">
                 Coop Telli 📍
             </a>
+            <a href="https://www.coop-restaurant.ch/de/restaurantfinder/finderdetailpage.2039.html" target="_blank" class="website-link" title="Offizielle Webseite">
+                🌐 Web
+            </a>
         </h2>
+
         <div id="coop-liste" class="menu-container">Lade Daten von der API...</div>
 
         <!-- Toggle button to expand/collapse multi-day menu listings -->
@@ -170,9 +199,11 @@
 
     <div class="restaurant-box">
         <h2>
-            <!-- Deep link to Google Maps for pedestrian routing -->
             <a href="https://www.google.com/maps/dir/?api=1&destination=Chang+Thai+Aarau&travelmode=walking" target="_blank" class="maps-link">
                 Chang Thai Aarau 📍
+            </a>
+            <a href="https://www.changthaifood.ch/aarau" target="_blank" class="website-link" title="Offizielle Webseite">
+                🌐 Web
             </a>
         </h2>
         
@@ -192,7 +223,7 @@
         
         <p><strong>Alle Angaben ohne Gewähr.</strong> Kurzfristige Änderungen der Menüs, Preise oder Verfügbarkeiten durch die jeweiligen Restaurants sind jederzeit möglich.</p>
         
-        <p class="footer-source">Die Rohdaten werden automatisiert von den öffentlichen Webseiten der Kantine Rampe, des Coop Restaurants Telli und Chang Thai Aarau sowie über die öffentliche Lunchgate-API (Mojo) aggregiert.</p>
+        <p class="footer-source">Die Rohdaten werden automatisiert von den öffentlichen Webseiten der Kantine Rampe, des Coop Restaurants Telli und Chang Thai Aarau sowie über die öffentliche Lunchgate-API (Mojo) gesammelt.</p>
     </footer>
     </div>
 
