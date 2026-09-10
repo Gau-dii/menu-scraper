@@ -102,6 +102,26 @@
             transition: background-color 0.2s;
         }
         .toggle-btn:hover { background-color: #cbd5e1; }
+
+        /* Styling for the footer disclaimer and attribution */
+        .page-footer {
+            margin-top: 40px;
+            padding: 25px 15px;
+            font-size: 0.85em;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+            line-height: 1.6;
+            text-align: left;
+        }
+        .page-footer p {
+            margin: 0 0 12px 0; /* Abstand nach unten für jeden Absatz */
+        }
+        .page-footer .footer-source {
+            margin-top: 20px;
+            font-style: italic;
+            font-size: 0.95em;
+            color: #a0aec0; /* Etwas dezenter für die reine Quellenangabe */
+        }
     </style>
 </head>
 <body>
@@ -165,6 +185,15 @@
         
         <!-- Toggle button to expand/collapse multi-day menu listings -->
         <button id="changthai-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
+
+        <!-- Legal disclaimer and data attribution footer -->
+    <footer class="page-footer">
+        <p><strong>Hinweis:</strong> Dies ist ein unabhängiges, nicht-kommerzielles Tool zur vereinfachten Übersicht für die Mittagspause.</p>
+        
+        <p><strong>Alle Angaben ohne Gewähr.</strong> Kurzfristige Änderungen der Menüs, Preise oder Verfügbarkeiten durch die jeweiligen Restaurants sind jederzeit möglich.</p>
+        
+        <p class="footer-source">Die Rohdaten werden automatisiert von den öffentlichen Webseiten der Kantine Rampe, des Coop Restaurants Telli und Chang Thai Aarau sowie über die öffentliche Lunchgate-API (Mojo) aggregiert.</p>
+    </footer>
     </div>
 
     <script>
