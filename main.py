@@ -32,6 +32,10 @@ def get_rampe_menu():
     
     # Fallback date in case the DOM traversal fails
     heute_string = datetime.now().strftime("%d.%m.%Y")
+
+    # Map weekdays to integers to detect when a new week starts
+    wochentage = {"montag": 0, "dienstag": 1, "mittwoch": 2, "donnerstag": 3, "freitag": 4}
+    letzter_tag_index = -1
     
     if antwort.status_code == 200:
         # Parse the HTML DOM
@@ -59,6 +63,18 @@ def get_rampe_menu():
                 # Traverse the DOM backward to find the closest preceding weekday header
                 datum_node = menu.find_previous(string=re.compile(r'(Montag|Dienstag|Mittwoch|Donnerstag|Freitag)', re.IGNORECASE))
                 datum_str = datum_node.strip() if datum_node else heute_string
+
+                # Prevent bleeding into the next week
+                match = re.search(r'(montag|dienstag|mittwoch|donnerstag|freitag)', datum_str, re.IGNORECASE)
+                if match:
+                    aktueller_tag = match.group(1).lower()
+                    aktueller_tag_index = wochentage[aktueller_tag]
+                    
+                    # If the day index drops (e.g., Friday(4) to Monday(0)), a new week has started
+                    if aktueller_tag_index < letzter_tag_index:
+                        break # Stop parsing completely and exit the loop
+                        
+                    letzter_tag_index = aktueller_tag_index                
                 
                 if gericht_name != "":
                     menues_liste.append({
@@ -84,9 +100,13 @@ def get_mojo_menu():
     url = "https://api2.lunchgate.ch/restaurant/menu"
     menues_liste = []
     api_status = "ok" 
-    
+
+    heute_wochentag = datetime.now().weekday()
+    tage_rest = max(0, 5 - heute_wochentag)
+
+
     # Iterate through day=0 (today) and day=1 (tomorrow)
-    for day in [0, 1]:
+    for day in range(tage_rest):
         parameter = {"restaurant_id": 15901, "day": day}
         antwort = requests.get(url, params=parameter, auth=HTTPBasicAuth('api.demo@lunchgate.ch', 'demo'))
         
