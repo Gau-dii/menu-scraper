@@ -4,144 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mittagsmenüs Aarau</title>
-    <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f0f2f5; 
-            color: #333; 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 20px; 
-        }
-        h1 { text-align: center; color: #1a365d; margin-bottom: 30px; }
-        
-        .restaurant-box { 
-            background: white; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-            margin-bottom: 30px; 
-            padding: 25px; 
-        }
-        h2 { 
-            color: #2b6cb0; 
-            border-bottom: 2px solid #e2e8f0; 
-            padding-bottom: 10px; 
-            margin-top: 0; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
-        .website-link {
-            text-decoration: none;
-            font-size: 0.7em;
-            color: #4a5568;
-            background-color: #edf2f7;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: background-color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .website-link:hover {
-            background-color: #e2e8f0;
-        }
-        
-        /* Styling for the Google Maps routing links in the headers */
-        .maps-link {
-            text-decoration: none;
-            color: inherit;
-            transition: opacity 0.2s;
-        }
-        .maps-link:hover {
-            opacity: 0.8;
-        }
-
-        .menu-container { display: flex; flex-direction: column; }
-        
-        .menu-item { 
-            padding: 15px 0; 
-            border-bottom: 1px solid #edf2f7; 
-        }
-        .menu-item:last-child { border-bottom: none; padding-bottom: 0; }
-        
-        .menu-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 8px; 
-        }
-        
-        .badge-group { display: flex; gap: 10px; align-items: center; }
-        
-        .menu-date { 
-            font-size: 0.85em; 
-            font-weight: bold; 
-            padding: 4px 8px; 
-            border-radius: 6px; 
-        }
-        
-        /* Color palette mapping for up to 5 consecutive days */
-        .date-color-0 { background: #e3f2fd; color: #1565c0; } 
-        .date-color-1 { background: #e8f5e9; color: #2e7d32; } 
-        .date-color-2 { background: #fff3e0; color: #ef6c00; } 
-        .date-color-3 { background: #f3e5f5; color: #6a1b9a; } 
-        .date-color-4 { background: #ffebee; color: #c62828; } 
-        
-        .menu-category { font-weight: bold; color: #2d3748; font-size: 0.9em; }
-        .menu-dish { font-size: 1.1em; color: #1a202c; line-height: 1.4; }
-        .menu-price { color: #dd6b20; font-weight: bold; font-size: 0.95em; text-align: right; }
-
-        /* Styling for the corporate discount notification banner */
-        .discount-hint { 
-            background-color: #e6f6e6; 
-            color: #2e7d32; 
-            padding: 10px 15px; 
-            border-radius: 8px; 
-            font-size: 0.9em; 
-            margin-bottom: 20px; 
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-        }
-
-        /* Styling for the expandable toggle button */
-        .toggle-btn {
-            background-color: #e2e8f0;
-            color: #2b6cb0;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: background-color 0.2s;
-        }
-        .toggle-btn:hover { background-color: #cbd5e1; }
-
-        /* Styling for the footer disclaimer and attribution */
-        .page-footer {
-            margin-top: 40px;
-            padding: 25px 15px;
-            font-size: 0.85em;
-            color: #718096;
-            border-top: 1px solid #e2e8f0;
-            line-height: 1.6;
-            text-align: left;
-        }
-        .page-footer p {
-            margin: 0 0 12px 0; /* Abstand nach unten für jeden Absatz */
-        }
-        .page-footer .footer-source {
-            margin-top: 20px;
-            font-style: italic;
-            font-size: 0.95em;
-            color: #a0aec0; /* Etwas dezenter für die reine Quellenangabe */
-        }
-    </style>
+    <!-- Standard favicon for Android and desktop browsers -->
+    <link rel="icon" type="image/png" href="app-icon.png">
+    <!-- App icon for iOS (iPhone/iPad) home screen shortcut -->
+    <link rel="apple-touch-icon" href="app-icon.png">
+    <!-- Tints the mobile device status bar to match the app's primary color -->
+    <meta name="theme-color" content="#1a365d">
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -176,7 +46,6 @@
                 🌐 Web
             </a>
         </h2>
-
         <div id="mojo-liste" class="menu-container">Lade Daten von der API...</div>
         <button id="mojo-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
     </div>
@@ -190,10 +59,7 @@
                 🌐 Web
             </a>
         </h2>
-
         <div id="coop-liste" class="menu-container">Lade Daten von der API...</div>
-
-        <!-- Toggle button to expand/collapse multi-day menu listings -->
         <button id="coop-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
     </div>
 
@@ -205,7 +71,7 @@
             <a href="https://www.changthaifood.ch/aarau" target="_blank" class="website-link" title="Offizielle Webseite">
                 🌐 Web
             </a>
-        </h2>
+        </h2>7
         
         <!-- Environmental discount banner -->
         <div class="discount-hint">
@@ -213,132 +79,17 @@
         </div>
         
         <div id="changthai-liste" class="menu-container">Lade Daten von der API...</div>
-        
-        <!-- Toggle button to expand/collapse multi-day menu listings -->
         <button id="changthai-btn" class="toggle-btn" style="display: none;">Mehr anzeigen</button>
 
         <!-- Legal disclaimer and data attribution footer -->
-    <footer class="page-footer">
-        <p><strong>Hinweis:</strong> Dies ist ein unabhängiges, nicht-kommerzielles Tool zur vereinfachten Übersicht für die Mittagspause.</p>
-        
-        <p><strong>Alle Angaben ohne Gewähr.</strong> Kurzfristige Änderungen der Menüs, Preise oder Verfügbarkeiten durch die jeweiligen Restaurants sind jederzeit möglich.</p>
-        
-        <p class="footer-source">Die Rohdaten werden automatisiert von den öffentlichen Webseiten der Kantine Rampe, des Coop Restaurants Telli und Chang Thai Aarau sowie über die öffentliche Lunchgate-API (Mojo) gesammelt.</p>
-    </footer>
+        <footer class="page-footer">
+            <p><strong>Hinweis:</strong> Dies ist ein unabhängiges, nicht-kommerzielles Tool zur vereinfachten Übersicht für die Mittagspause.</p>
+            <p><strong>Alle Angaben ohne Gewähr.</strong> Kurzfristige Änderungen der Menüs, Preise oder Verfügbarkeiten durch die jeweiligen Restaurants sind jederzeit möglich.</p>
+            <p class="footer-source">Die Rohdaten werden automatisiert von den öffentlichen Webseiten der Kantine Rampe, des Coop Restaurants Telli und Chang Thai Aarau sowie über die öffentliche Lunchgate-API (Mojo) gesammelt.</p>
+        </footer>
     </div>
 
-    <script>
-        /**
-         * Standardizes and shortens date strings into a compact format (e.g., "Do. 10.09.")
-         * Handles both ISO-like numeric strings and localized text strings.
-         */
-        function formatShortDate(dateStr) {
-            // Array mapping JavaScript day indices (0=Sunday) to localized short weekday labels
-            const weekdays = ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'];
-
-            // Case 1: ISO-like numeric date format from API (e.g., "10.09.2026")
-            if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateStr)) {
-                const parts = dateStr.split('.');                
-                // Month indices in JavaScript Date objects are 0-indexed (subtract 1)
-                const dateObj = new Date(parts[2], parts[1] - 1, parts[0]);
-                const dayName = weekdays[dateObj.getDay()]; 
-                return `${dayName} ${parts[0]}.${parts[1]}.`; 
-            }
-
-            // Case 2: Localized text format (e.g., "Donnerstag, 10. September")
-            const replacements = {               
-                // Convert German month names to numeric representations
-                ' Januar': '01.', ' Februar': '02.', ' März': '03.', ' April': '04.',
-                ' Mai': '05.', ' Juni': '06.', ' Juli': '07.', ' August': '08.',
-                ' September': '09.', ' Oktober': '10.', ' November': '11.', ' Dezember': '12.',                
-                // Abbreviate weekday names including trailing commas
-                'Montag, ': 'Mo. ', 'Dienstag, ': 'Di. ', 'Mittwoch, ': 'Mi. ', 
-                'Donnerstag, ': 'Do. ', 'Freitag, ': 'Fr. '
-            };
-            
-            for (const [longText, shortText] of Object.entries(replacements)) {
-                dateStr = dateStr.replace(longText, shortText);
-            }
-            
-            return dateStr;
-        }
-        
-        /**
-         * Renders dynamic menu items into the designated DOM container.
-         * Enforces a "today-first" focus by collapsing future days behind a toggle action.
-         */
-        function renderMenus(data, containerId, buttonId) {
-            const container = document.getElementById(containerId);
-            const button = document.getElementById(buttonId);
-            container.innerHTML = ''; 
-            
-            // Extract unique dates to determine grouping and visibility logic
-            const uniqueDates = [...new Set(data.daten.map(item => item.datum))];
-            if (uniqueDates.length === 0) return;
-            
-            // Designate the earliest available date as the primary current focus
-            const firstDate = uniqueDates[0];
-            
-            data.daten.forEach(menu => {
-                const item = document.createElement('div');
-                item.className = 'menu-item';
-                
-                // Collapse menu entries that do not match the current day's focus
-                if (menu.datum !== firstDate) {
-                    item.classList.add('hidden-menu');
-                    item.style.display = 'none';
-                }
-                
-                // Assign a specific color class index (0-4) based on the date's position
-                const dateIndex = uniqueDates.indexOf(menu.datum) % 5;
-                const dateClass = `date-color-${dateIndex}`;
-                const preisHTML = menu.preis ? `<div class="menu-price">${menu.preis}</div>` : '';
-                
-                const shortDate = formatShortDate(menu.datum);
-                
-                // Inject sanitized markup into the DOM element
-                item.innerHTML = `
-                    <div class="menu-header">
-                        <div class="badge-group">
-                            <span class="menu-date ${dateClass}">${shortDate}</span>
-                            <span class="menu-category">${menu.kategorie}</span>
-                        </div>
-                        ${preisHTML}
-                    </div>
-                    <div class="menu-dish">${menu.gericht}</div>
-                `;
-                container.appendChild(item);
-            });
-
-            // Bind toggle behavior to the expansion button if multiple dates exist
-            if (uniqueDates.length > 1) {
-                button.style.display = 'block';
-                button.onclick = function() {
-                    const hiddenItems = container.querySelectorAll('.hidden-menu');
-                    const isHidden = hiddenItems[0].style.display === 'none';
-                    
-                    hiddenItems.forEach(el => el.style.display = isHidden ? 'block' : 'none');
-                    button.innerText = isHidden ? 'Weniger anzeigen' : 'Mehr anzeigen';
-                };
-            }
-        }
-
-        // Asynchronously fetch and render payloads from the cloud-hosted backend endpoints
-        fetch('https://menu-scraper-18yf.onrender.com/api/rampe')
-            .then(response => response.json())
-            .then(data => renderMenus(data, 'rampe-liste', 'rampe-btn'));
-
-        fetch('https://menu-scraper-18yf.onrender.com/api/mojo')
-            .then(response => response.json())
-            .then(data => renderMenus(data, 'mojo-liste', 'mojo-btn'));
-
-        fetch('https://menu-scraper-18yf.onrender.com/api/coop')
-            .then(response => response.json())
-            .then(data => renderMenus(data, 'coop-liste', 'coop-btn'));    
-
-        fetch('https://menu-scraper-18yf.onrender.com/api/changthai')
-            .then(response => response.json())
-            .then(data => renderMenus(data, 'changthai-liste', 'changthai-btn'));    
-    </script>
+    <!-- Link to external JavaScript file -->
+    <script src="script.js"></script>
 </body>
 </html>

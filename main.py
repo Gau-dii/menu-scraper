@@ -15,8 +15,8 @@ app = FastAPI(title="Aarau Menü API")
 # Configure CORS to allow cross-origin requests from the frontend client
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
-    allow_methods=["*"],
+    allow_origins=["https://gau-dii.github.io"], 
+    allow_methods=["GET"],
     allow_headers=["*"],
 )
 

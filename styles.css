@@ -1,0 +1,243 @@
+/* Core layout and typography */
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background-color: #f0f2f5; 
+    color: #333; 
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 20px; 
+}
+
+h1 { 
+    text-align: center; 
+    color: #1a365d; 
+    margin-bottom: 30px; 
+}
+
+/* Card container for each restaurant */
+.restaurant-box { 
+    background: white; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+    margin-bottom: 30px; 
+    padding: 25px; 
+}
+
+h2 { 
+    color: #2b6cb0; 
+    border-bottom: 2px solid #e2e8f0; 
+    padding-bottom: 10px; 
+    margin-top: 0; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+/* Styling for the official website fallback link (right-aligned) */
+.website-link {
+    text-decoration: none;
+    font-size: 0.7em;
+    color: #4a5568;
+    background-color: #edf2f7;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.website-link:hover {
+    background-color: #e2e8f0;
+}
+
+/* Styling for the Google Maps routing links in the headers */
+.maps-link {
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s;
+}
+
+.maps-link:hover {
+    opacity: 0.8;
+}
+
+/* Menu layout structures */
+.menu-container { 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.menu-item { 
+    padding: 15px 0; 
+    border-bottom: 1px solid #edf2f7; 
+}
+
+.menu-item:last-child { 
+    border-bottom: none; 
+    padding-bottom: 0; 
+}
+
+.menu-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 8px; 
+}
+
+.badge-group { 
+    display: flex; 
+    gap: 10px; 
+    align-items: center; 
+}
+
+.menu-date { 
+    font-size: 0.85em; 
+    font-weight: bold; 
+    padding: 4px 8px; 
+    border-radius: 6px; 
+}
+
+/* Color palette mapping for up to 5 consecutive days */
+.date-color-0 { background: #e3f2fd; color: #1565c0; } 
+.date-color-1 { background: #e8f5e9; color: #2e7d32; } 
+.date-color-2 { background: #fff3e0; color: #ef6c00; } 
+.date-color-3 { background: #f3e5f5; color: #6a1b9a; } 
+.date-color-4 { background: #ffebee; color: #c62828; } 
+
+/* Typography for menu details */
+.menu-category { font-weight: bold; color: #2d3748; font-size: 0.9em; }
+.menu-dish { font-size: 1.1em; color: #1a202c; line-height: 1.4; }
+.menu-price { color: #dd6b20; font-weight: bold; font-size: 0.95em; text-align: right; }
+
+/* Styling for the corporate discount notification banner */
+.discount-hint { 
+    background-color: #e6f6e6; 
+    color: #2e7d32; 
+    padding: 10px 15px; 
+    border-radius: 8px; 
+    font-size: 0.9em; 
+    margin-bottom: 20px; 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+/* Styling for the expandable toggle button */
+.toggle-btn {
+    background-color: #e2e8f0;
+    color: #2b6cb0;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+}
+
+.toggle-btn:hover { 
+    background-color: #cbd5e1; 
+}
+
+/* Styling for the footer disclaimer and attribution */
+.page-footer {
+    margin-top: 40px;
+    padding: 25px 15px;
+    font-size: 0.85em;
+    color: #718096;
+    border-top: 1px solid #e2e8f0;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.page-footer p {
+    margin: 0 0 12px 0; 
+}
+
+.page-footer .footer-source {
+    margin-top: 20px;
+    font-style: italic;
+    font-size: 0.95em;
+    color: #a0aec0; 
+}
+
+/* =========================================
+   DARK MODE OVERRIDES
+   Automatically applied when the user's OS 
+   or browser is set to dark mode.
+   ========================================= */
+@media (prefers-color-scheme: dark) {
+    /* Global background and text inversion */
+    body {
+        background-color: #121212;
+        color: #e4e6eb;
+    }
+
+    h1 {
+        color: #90cdf4;
+    }
+
+    /* Restaurant container styling */
+    .restaurant-box {
+        background-color: #242526;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+        color: #63b3ed;
+        border-bottom-color: #3a3b3c;
+    }
+
+    /* Fallback website link button */
+    .website-link {
+        background-color: #3a3b3c;
+        color: #e4e6eb;
+    }
+    .website-link:hover {
+        background-color: #4e4f50;
+    }
+
+    /* Divider lines between individual dishes */
+    .menu-item {
+        border-bottom-color: #3a3b3c;
+    }
+
+    /* Enhance contrast for dish texts */
+    .menu-category { color: #a0aec0; }
+    .menu-dish { color: #e2e8f0; }
+    .menu-price { color: #fbd38d; }
+
+    /* Adjust pastel date badges for dark mode readability */
+    .date-color-0 { background: #1e3a8a; color: #bfdbfe; } 
+    .date-color-1 { background: #14532d; color: #bbf7d0; } 
+    .date-color-2 { background: #7c2d12; color: #fed7aa; } 
+    .date-color-3 { background: #4c1d95; color: #e9d5ff; } 
+    .date-color-4 { background: #7f1d1d; color: #fecaca; } 
+
+    /* Darken the corporate and environmental discount banners */
+    .discount-hint {
+        background-color: #14532d;
+        color: #bbf7d0;
+    }
+
+    /* Expand/Collapse toggle button */
+    .toggle-btn {
+        background-color: #3a3b3c;
+        color: #63b3ed;
+    }
+    .toggle-btn:hover {
+        background-color: #4e4f50;
+    }
+
+    /* Footer text and border adjustments */
+    .page-footer {
+        border-top-color: #3a3b3c;
+        color: #a0aec0;
+    }
+    .page-footer .footer-source {
+        color: #718096;
+    }
+}
