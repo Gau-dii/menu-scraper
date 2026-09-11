@@ -116,3 +116,38 @@ fetch('https://menu-scraper-18yf.onrender.com/api/coop')
 fetch('https://menu-scraper-18yf.onrender.com/api/changthai')
     .then(response => response.json())
     .then(data => renderMenus(data, 'changthai-liste', 'changthai-btn'));
+
+
+/**
+ * Theme Toggle Logic (Light/Dark Mode)
+ * Persists user choice in browser's localStorage
+ */
+const themeToggleBtn = document.getElementById('theme-toggle');
+const bodyElement = document.body;
+
+// 1. Check local storage for saved preference, fallback to OS system preference
+const savedTheme = localStorage.getItem('app-theme');
+const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+    bodyElement.classList.add('dark-theme');
+    updateButtonUI(true);
+}
+
+// 2. Toggle theme on button click
+themeToggleBtn.addEventListener('click', () => {
+    const isNowDark = bodyElement.classList.toggle('dark-theme');
+    
+    // Save the new preference so it survives page reloads
+    localStorage.setItem('app-theme', isNowDark ? 'dark' : 'light');
+    updateButtonUI(isNowDark);
+});
+
+// 3. Helper function to swap button icon and text
+function updateButtonUI(isDark) {
+    if (isDark) {
+        themeToggleBtn.innerHTML = '<span>☀️</span> Light Mode';
+    } else {
+        themeToggleBtn.innerHTML = '<span>🌙</span> Dark Mode';
+    }
+}
