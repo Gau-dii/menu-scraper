@@ -191,7 +191,7 @@ body.dark-theme .page-footer .footer-source { color: #718096; }
 /* Styling for the manual theme toggle button (Floating Top Right) */
 .theme-toggle-btn {
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     right: 20px;
     z-index: 1000; /* Ensures the button always stays ON TOP of other elements */
     
