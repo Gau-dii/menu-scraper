@@ -26,6 +26,24 @@ def get_rampe_menu():
     Scrapes the weekly menu from Kantine Rampe's HTML website.
     Extracts dish categories, descriptions, and external prices.
     """
+
+    heute_wochentag = datetime.now().weekday()
+    heute_string = datetime.now().strftime("%d.%m.%Y")
+    
+    if heute_wochentag in [5, 6]:
+        return {
+            "restaurant": "Kantine Rampe", 
+            "status": "ok", 
+            "daten": [
+                {
+                    "datum": heute_string,
+                    "kategorie": "Info",
+                    "gericht": "Am Wochenende geschlossen. Das Menü für die neue Woche wird ab Montag angezeigt.",
+                    "preis": ""
+                }
+            ]
+        }
+
     url = "https://rampe-aarau.ch/"
     antwort = requests.get(url)
     menues_liste = []
@@ -74,7 +92,10 @@ def get_rampe_menu():
                     if aktueller_tag_index < letzter_tag_index:
                         break # Stop parsing completely and exit the loop
                         
-                    letzter_tag_index = aktueller_tag_index                
+                    letzter_tag_index = aktueller_tag_index  
+
+                    if aktueller_tag_index < heute_wochentag:
+                        continue              
                 
                 if gericht_name != "":
                     menues_liste.append({
