@@ -206,6 +206,37 @@ def get_changthai_menu():
     Scrapes the daily menu from Chang Thai's dynamically linked PDF.
     Extracts the date range, categories, and dynamically isolates prices (handling special characters).
     """
+    heute_wochentag = datetime.now().weekday()
+    heute_datum = datetime.now().strftime("%d.%m.%Y")
+    
+    if heute_wochentag == 0:
+        return {
+            "restaurant": "Chang Thai Aarau", 
+            "status": "ok", 
+            "daten": [
+                {
+                    "datum": heute_datum,
+                    "kategorie": "Info",
+                    "gericht": "Heute geschlossen (Ruhetag). Das aktuelle Wochenmenü ist ab Dienstag verfügbar.",
+                    "preis": ""
+                }
+            ]
+        }
+        
+    if heute_wochentag in [5, 6]:
+        return {
+            "restaurant": "Chang Thai Aarau", 
+            "status": "ok", 
+            "daten": [
+                {
+                    "datum": heute_datum,
+                    "kategorie": "Info",
+                    "gericht": "Am Wochenende gibt es kein spezielles Mittagsmenü. Das reguläre À-la-carte-Angebot ist im Restaurant verfügbar.",
+                    "preis": ""
+                }
+            ]
+        }
+    
     try:
         html_url = "https://www.changthaifood.ch/aarau"
         html_resp = requests.get(html_url)
