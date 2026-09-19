@@ -118,6 +118,24 @@ def get_mojo_menu():
     Fetches today's and tomorrow's menus from the Lunchgate XML API.
     Uses HTTP Basic Auth for API access.
     """
+
+    heute_wochentag = datetime.now().weekday()
+    heute_string = datetime.now().strftime("%d.%m.%Y")
+    
+    if heute_wochentag in [5, 6]:
+        return {
+            "restaurant": "Mojo Aarau", 
+            "status": "ok", 
+            "daten": [
+                {
+                    "datum": heute_string,
+                    "kategorie": "Info",
+                    "gericht": "Am Wochenende geschlossen. Das Menü für die neue Woche wird ab Montag angezeigt.",
+                    "preis": ""
+                }
+            ]
+        }
+
     url = "https://api2.lunchgate.ch/restaurant/menu"
     menues_liste = []
     api_status = "ok" 
