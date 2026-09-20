@@ -191,6 +191,24 @@ def get_coop_menu():
     Scrapes the daily menus from Coop Telli Restaurant's HTML website.
     Extracts dish categories, descriptions, and prices from the DOM tables.
     """
+
+    heute_wochentag = datetime.now().weekday()
+    heute_string = datetime.now().strftime("%d.%m.%Y")
+    
+    if heute_wochentag == 6:
+        return {
+            "restaurant": "Coop Telli", 
+            "status": "ok", 
+            "daten": [
+                {
+                    "datum": heute_string,
+                    "kategorie": "Info",
+                    "gericht": "Am Sonntag geschlossen. Das Menü für die neue Woche wird ab Montag angezeigt.",
+                    "preis": ""
+                }
+            ]
+        }
+
     url = "https://www.coop-restaurant.ch/de/restaurantfinder/finderdetailpage.2039.html"
     antwort = requests.get(url)
     menues_liste = []
