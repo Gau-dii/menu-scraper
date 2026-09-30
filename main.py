@@ -19,6 +19,9 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
+@app.get("/api/wakeup")
+def wakeup():
+    return {"status": "awake"}
 
 @app.get("/api/rampe")
 def get_rampe_menu():
