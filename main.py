@@ -399,7 +399,7 @@ def get_stadtwaechter_event():
         
     if wochentag == 1:
         ziel_datum = heute + timedelta(days=2)
-        hinweis_praefix = "Reminder: Donnerstag"
+        hinweis_praefix = "Heute:"
     elif wochentag == 2:
         ziel_datum = heute + timedelta(days=1)
         hinweis_praefix = "Reminder: Morgen"
@@ -429,14 +429,13 @@ def get_stadtwaechter_event():
                         title = title_tag.text.strip()
                         date_content = date_tag.get('content', '')
                         
-                        if "Fürobebier" in title and date_content.startswith(ziel_datum_str):
-                            beschreibung = desc_tag.text.strip() if desc_tag else "Der Feierabend ruft"
+                        if "Fürobebier" in title and date_content.startswith(ziel_datum_str):                            
                             
                             # Struktur 100% einheitlich (standort und link entfernt)
                             menues_liste.append({
                                 "datum": ziel_datum.strftime("%d.%m.%Y"),
                                 "kategorie": "Feierabend-Event",
-                                "gericht": f"{hinweis_praefix} Fürobebier! {beschreibung} (17:00 - 21:00 Uhr)",
+                                "gericht": f"{hinweis_praefix} Fürobebier! (17:00 - 21:00 Uhr)",
                                 "preis": ""
                             })
                             api_status = "ok"
