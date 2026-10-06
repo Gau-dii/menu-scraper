@@ -100,6 +100,36 @@ function renderMenus(data, containerId, buttonId) {
     }
 }
 
+/**
+ * Fetches and renders the Stadtwächter after-work event banner.
+ * Displays only on Wednesdays and Thursdays based on API response.
+ * Uses a custom banner layout instead of the standard menu list.
+ */
+function fetchStadtwaechter() {
+    fetch('https://menu-scraper-18yf.onrender.com/api/stadtwaechter')
+        .then(response => response.json())
+        .then(data => {
+            const banner = document.getElementById("stadtwaechter-banner");
+            
+            if (data.status === "hidden" || data.daten.length === 0) {
+                banner.style.display = "none";
+                return;
+            }
+
+            const event = data.daten[0];
+
+            document.getElementById("stadtwaechter-content").innerHTML = `
+                <p style="margin: 5px 0 0 0;">🍻 <strong>${event.gericht}</strong></p>
+            `;
+
+            banner.style.display = "block";
+        })
+        .catch(error => {
+            console.error("Fehler beim Laden des Stadtwächter-Events:", error);
+            document.getElementById("stadtwaechter-banner").style.display = "none";
+        });
+}
+
 // Asynchronously fetch and render payloads from the cloud-hosted backend endpoints
 fetch('https://menu-scraper-18yf.onrender.com/api/rampe')
     .then(response => response.json())
@@ -117,6 +147,7 @@ fetch('https://menu-scraper-18yf.onrender.com/api/changthai')
     .then(response => response.json())
     .then(data => renderMenus(data, 'changthai-liste', 'changthai-btn'));
 
+fetchStadtwaechter();
 
 /**
  * Theme Toggle Logic (Light/Dark Mode)

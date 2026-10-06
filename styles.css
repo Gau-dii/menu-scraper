@@ -23,6 +23,23 @@ h1 {
     padding: 25px; 
 }
 
+/* Styling for the Stadtwächter After-Work Banner */
+.event-banner {
+    background-color: #fcf8e3; 
+    border: 1px solid #faebcc;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+#stadtwaechter-content {
+    margin-top: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #1a202c;
+}
+
 h2 { 
     color: #2b6cb0; 
     border-bottom: 2px solid #e2e8f0; 

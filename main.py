@@ -4,7 +4,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 import io
 from pypdf import PdfReader
@@ -382,3 +382,70 @@ def get_changthai_menu():
 
     except Exception as e:
         return {"restaurant": "Chang Thai", "status": "fehler", "daten": [], "error": str(e)}
+
+@app.get("/api/stadtwaechter")
+def get_stadtwaechter_event():
+    """
+    Scrapes the event page of Brauerei Stadtwächter to find the 'Fürobebier' event.
+    Only returns data on Wednesdays (as a reminder for tomorrow) and Thursdays (for today).
+    Includes location and direct link for future frontend HTML integration.
+    *** test dienstag auch schon anzeigen ***
+    """
+    heute = datetime.now()
+    wochentag = heute.weekday()
+    
+    if wochentag not in [1, 2, 3]:
+        return {"restaurant": "Brauerei Stadtwächter", "status": "hidden", "daten": []}
+        
+    if wochentag == 1:
+        ziel_datum = heute + timedelta(days=2)
+        hinweis_praefix = "Reminder: Donnerstag"
+    elif wochentag == 2:
+        ziel_datum = heute + timedelta(days=1)
+        hinweis_praefix = "Reminder: Morgen"
+    else:
+        ziel_datum = heute
+        hinweis_praefix = "Heute:"
+        
+    ziel_datum_str = ziel_datum.strftime("%Y-%m-%d")
+    menues_liste = []
+    api_status = "hidden"
+    
+    try:
+        url = "https://www.stadtwaechter.ch/event"
+        antwort = requests.get(url)
+        
+        if antwort.status_code == 200:
+            soup = BeautifulSoup(antwort.text, 'html.parser')
+            events = soup.find_all('article', class_='card')
+            
+            for event in events:
+                try:
+                    title_tag = event.find('span', itemprop='name')
+                    date_tag = event.find('meta', itemprop='startDate')
+                    desc_tag = event.find('small', itemprop='description')
+                    
+                    if title_tag and date_tag:
+                        title = title_tag.text.strip()
+                        date_content = date_tag.get('content', '')
+                        
+                        if "Fürobebier" in title and date_content.startswith(ziel_datum_str):
+                            beschreibung = desc_tag.text.strip() if desc_tag else "Der Feierabend ruft"
+                            
+                            # Struktur 100% einheitlich (standort und link entfernt)
+                            menues_liste.append({
+                                "datum": ziel_datum.strftime("%d.%m.%Y"),
+                                "kategorie": "Feierabend-Event",
+                                "gericht": f"{hinweis_praefix} Fürobebier! {beschreibung} (17:00 - 21:00 Uhr)",
+                                "preis": ""
+                            })
+                            api_status = "ok"
+                            break 
+                            
+                except AttributeError:
+                    continue
+                    
+        return {"restaurant": "Brauerei Stadtwächter", "status": api_status, "daten": menues_liste}
+        
+    except Exception as e:
+        return {"restaurant": "Brauerei Stadtwächter", "status": "fehler", "daten": [], "error": str(e)}   
