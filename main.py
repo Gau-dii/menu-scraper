@@ -387,9 +387,8 @@ def get_changthai_menu():
 def get_stadtwaechter_event():
     """
     Scrapes the event page of Brauerei Stadtwächter to find the 'Fürobebier' event.
-    Only returns data on Wednesdays (as a reminder for tomorrow) and Thursdays (for today).
+    Only returns data on Tuesday and Wednesdays (as a reminder) and Thursdays (for today).
     Includes location and direct link for future frontend HTML integration.
-    *** test dienstag auch schon anzeigen ***
     """
     heute = datetime.now()
     wochentag = heute.weekday()
@@ -399,7 +398,7 @@ def get_stadtwaechter_event():
         
     if wochentag == 1:
         ziel_datum = heute + timedelta(days=2)
-        hinweis_praefix = "Heute:"
+        hinweis_praefix = "Reminder: Donnerstag"
     elif wochentag == 2:
         ziel_datum = heute + timedelta(days=1)
         hinweis_praefix = "Reminder: Morgen"

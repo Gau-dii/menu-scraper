@@ -25,19 +25,38 @@ h1 {
 
 /* Styling for the Stadtwächter After-Work Banner */
 .event-banner {
-    background-color: #faf8f5; 
-    border: 1px solid #e2e8f0;
+    background-color: #2d3748; 
+    border: 1px solid #4a5568;
     border-radius: 12px;
     padding: 25px;
     margin-bottom: 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #f7fafc; 
+}
+
+.event-banner h2 {
+    color: #63b3ed; 
+    border-bottom: 2px solid #4a5568;
+}
+
+.event-banner a.maps-link {
+    color: inherit;
+}
+
+.event-banner a.website-link {
+    background-color: #4a5568;
+    color: #edf2f7;
+}
+
+.event-banner a.website-link:hover {
+    background-color: #718096;
 }
 
 #stadtwaechter-content {
     margin-top: 15px;
     font-weight: 500;
     line-height: 1.4;
-    color: #1a202c;
+    color: #f7fafc; 
 }
 
 h2 { 
@@ -187,6 +206,7 @@ h2 {
 body.dark-theme { background-color: #121212; color: #e4e6eb; }
 body.dark-theme h1 { color: #90cdf4; }
 body.dark-theme .restaurant-box { background-color: #242526; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+body.dark-theme .event-banner { background-color: #242526; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-color: #3a3b3c; }
 body.dark-theme h2 { color: #63b3ed; border-bottom-color: #3a3b3c; }
 body.dark-theme .website-link { background-color: #3a3b3c; color: #e4e6eb; }
 body.dark-theme .website-link:hover { background-color: #4e4f50; }
